@@ -1,0 +1,155 @@
+﻿@using DataAccess_Layer.DTOS
+@model IEnumerable<UserDto>
+@{
+    Layout = "_AdminLayout";
+}
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم المشرف</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .navbar {
+            margin-bottom: 20px;
+        }
+
+        .dashboard-card {
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        .user-row {
+            cursor: pointer;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+        }
+
+        .card-text {
+            font-size: 1rem;
+        }
+
+        .btn {
+            font-size: 0.9rem;
+        }
+
+        .table-dark {
+            background-color: #343a40;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="content">
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card text-white bg-primary dashboard-card">
+                        <div class="card-body">
+                            <h5 class="card-title">عدد الطلاب</h5>
+                            <p class="card-text">@ViewBag.Contestants</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-white bg-success dashboard-card">
+                        <div class="card-body">
+                            <h5 class="card-title"> عدد الامتحانات</h5>
+                            <p class="card-text">@ViewBag.Exams</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-white bg-warning dashboard-card">
+                        <div class="card-body">
+                            <h5 class="card-title">عدد المحفظين</h5>
+                            <p class="card-text">@ViewBag.Teachers</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mt-4 bg-light p-4 rounded">
+            <div class="d-flex justify-content-between mb-3">
+                <h2>إدارة المستخدمين</h2>
+                <div class="d-flex justify-content-between">
+                    <a asp-action="RegisterAdmin" asp-controller="Account" class="btn btn-primary me-4">إضافة أدمن</a>
+                    <a asp-action="RegisterDataEntry" asp-controller="Account" class="btn btn-secondary">إضافة مدخل بيانات</a>
+                </div>
+            </div>
+
+            <div class="mb-3 col-3">
+                <label for="roleFilter" class="form-label">فلتر الدور:</label>
+                <select id="roleFilter" class="form-select" onchange="filterUsers()">
+                    <option value="">الكل</option>
+                    <option value="Admin">أدمن</option>
+                    <option value="Data Entry">مدخل بيانات</option>
+                </select>
+            </div>
+
+            <table class="table table-bordered text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>اسم المستخدم</th>
+                        <th>الدور</th>
+                        <th>عدد الطلاب</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTable">
+                    @foreach (var user in Model)
+                    {
+                        <tr class="user-row" data-role="@user.Role">
+                            <td>@user.UserName</td>
+                            <td>@user.Role</td>
+                            <td>@user.NumberOfContestants</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm">تعديل</button>
+                                <a asp-action="Delete" asp-route-username="@user.UserName" class="btn btn-danger btn-sm">حذف</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function filterUsers() {
+            var selectedRole = document.getElementById("roleFilter").value;
+            var rows = document.querySelectorAll(".user-row");
+
+            rows.forEach(row => {
+                if (selectedRole === "" || row.getAttribute("data-role") === selectedRole) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+    </script>
+</body>
+</html>

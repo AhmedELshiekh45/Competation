@@ -1,0 +1,83 @@
+﻿@using ServiceLayer.ExamLogic.Dtos
+@model ExamDetailsDto
+
+@{
+    ViewData["Title"] = "تعديل الامتحان";
+}
+
+<h1>تعديل الامتحان</h1>
+
+<h4>بيانات الامتحان</h4>
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ContestantId" />
+
+            <!-- جدول الأسئلة -->
+            <h5>الأسئلة</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>السؤال</th>
+                        <th>النتيجة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 1; i <= 10; i++)
+                    {
+                        <tr>
+                            <td>
+                                <input type="text" value="السؤال @i" class="form-control" readonly />
+                            </td>
+                            <td>
+                                <input type="number" class="form-control question-score" min="0" step="0.1" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- المجموع الكلي -->
+            <div class="form-group">
+                <label asp-for="TotalScore" class="control-label">المجموع الكلي</label>
+                <input asp-for="TotalScore" class="form-control" readonly />
+                <span asp-validation-for="TotalScore" class="text-danger"></span>
+            </div>
+
+            <div class="form-group d-flex justify-content-between">
+                <input type="submit" value="حفظ" class="btn btn-primary" />
+                <a asp-action="GetDetails" asp-controller="Contestant" class="btn btn-danger " asp-route-id="@Model.ContestantId">العوده إلى القائمة</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+   
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            function calculateTotalScore() {
+                let totalScore = 0;
+                $('.question-score').each(function () {
+                    totalScore += parseFloat($(this).val()) || 0;
+                });
+                $('#TotalScore').val(totalScore);
+            }
+
+            // استماع للتغيير في النتيجة
+            $('.question-score').on('input', function () {
+                calculateTotalScore();
+            });
+
+            // حساب المجموع عند تحميل الصفحة
+            calculateTotalScore();
+        });
+    </script>
+}

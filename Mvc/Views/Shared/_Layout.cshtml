@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@ViewData["Title"]</title>
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		body {
+			background-image: url('/Images/1.jpg');
+			background-size: cover;
+			background-position: center;
+			height: 100vh;
+			margin: 0;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.navbar {
+			background-color: rgba(255, 255, 255, 0.8);
+		}
+
+		.container {
+			background-color: rgba(255, 255, 255, 0.8);
+			padding: 20px;
+			border-radius: 10px;
+			margin-top: 20px;
+		}
+	</style>
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light">
+		<a class="navbar-brand" href="#">الاستراحة</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item">
+					<a class="nav-link" asp-action="index" asp-controller="home">الصفحة الرئيسية</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">عن الموقع</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">اتصل بنا</a>
+				</li>
+				@if (User.Identity.IsAuthenticated)
+				{
+					
+					<li class="nav-item">
+						<a class="nav-link" asp-action="LogOut" asp-controller="Account">تسجيل خروج</a>
+					</li>
+				}
+				else
+				{
+					<li class="nav-item">
+						<a class="nav-link" asp-action="Login" asp-controller="Account">تسجيل دخول </a>
+					</li>
+
+				}
+			</ul>
+		</div>
+	</nav>
+
+	<div class="container">
+		@RenderBody()
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	@RenderSection("Scripts", required: false)
+</body>
+</html>

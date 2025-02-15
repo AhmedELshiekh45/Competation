@@ -1,0 +1,43 @@
+﻿@using ServiceLayer.ExamLogic.Dtos
+@model ExamDetailsDto
+
+@{
+    ViewData["Title"] = "تفاصيل الامتحان";
+    Layout = "_AdminLayout";
+}
+
+<h1 class="text-center">تفاصيل الامتحان</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                تفاصيل الامتحان
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">الرقم التسلسلي:</dt>
+                    <dd class="col-sm-8">@Model.SerialNumber</dd>
+
+                    <dt class="col-sm-4">عدد الأجزاء:</dt>
+                    <dd class="col-sm-8">@Model.PartsNumber</dd>
+
+                    <dt class="col-sm-4">المجموع الكلي:</dt>
+                    <dd class="col-sm-8">@Model.TotalScore</dd>
+
+                    <dt class="col-sm-4">تاريخ الامتحان:</dt>
+                    <dd class="col-sm-8">@Model.ExamDate</dd>
+
+                    <dt class="col-sm-4">اسم المحفظ:</dt>
+                    <dd class="col-sm-8">@Model.TeacherName</dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">تعديل</a>
+            <a asp-action="GetDetails" asp-controller="Contestant" asp-route-id ="@Model.ContestantId" class="btn btn-secondary">العودة</a>
+        </div>
+    </div>
+</div>

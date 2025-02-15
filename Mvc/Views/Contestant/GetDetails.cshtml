@@ -1,0 +1,154 @@
+﻿@using ServiceLayer.ContestantBL.Dtos
+
+@{
+	ViewData["Title"] = "تفاصيل المتسابق";
+	Layout = "_AdminLayout";
+
+}
+@model ContestantDetailsDto
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - تفاصيل المتسابق</title>
+
+	<!-- Bootstrap RTL Support -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.rtl.min.css" rel="stylesheet" />
+
+	<!-- Custom CSS -->
+	<style>
+		.container {
+			background-color: #f9f9f9;
+			border-radius: 8px;
+			padding: 20px;
+		}
+
+		h2, h3 {
+			color: #0056b3;
+		}
+
+		.table {
+			margin-top: 20px;
+		}
+
+		.btn {
+			margin-left: 5px;
+		}
+
+		.form-group {
+			margin-top: 20px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container mt-4">
+		<h2 class="text-center">تفاصيل المتسابق</h2>
+		<hr />
+
+		<div class="row">
+			<!-- تحويل النص من اليمين إلى اليسار -->
+			<div class="col-md-12">
+				<div class="row mb-3">
+					<div class="col-md-6">
+						<label class="fw-bold">الرقم القومي:</label>
+						<span>@Model.Id</span>
+					</div>
+					<div class="col-md-6">
+						<label class="fw-bold">الاسم بالكامل:</label>
+						<span>@Model.FullName</span>
+					</div>
+				</div>
+				<div class="row mb-3">
+					<div class="col-md-6">
+						<label class="fw-bold">السن:</label>
+						<span>@(DateTime.Now.Year - Model.BirthDate.Year)</span>
+					</div>
+					<div class="col-md-6">
+						<label class="fw-bold">رقم التليفون:</label>
+						<span>@Model.PhoneNumber</span>
+					</div>
+				</div>
+				<div class="row mb-3">
+					<div class="col-md-6">
+						<label class="fw-bold">نوع التعليم:</label>
+						<span>@Model.Education</span>
+					</div>
+				
+				
+
+				</div>
+				
+
+				<!-- زر التعديل -->
+				<div class="form-group text-start">
+					<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">تعديل البيانات</a>
+				</div>
+			</div>
+		</div>
+		<hr />
+
+		<h3 class="text-center">تاريخ المسابقات والنتائج</h3>
+		<table class="table table-bordered table-striped table-hover">
+			<thead class="thead-dark">
+				<tr>
+					<th>#</th>
+					<th>تاريخ المسابقة</th>
+					<th> عدد الاجزاء</th> <!-- إضافة رقم المسابقة -->
+					<th>النتيجة</th>
+					<th>الإجراءات</th>
+				</tr>
+			</thead>
+			<tbody>
+				@if (Model.Exams != null && Model.Exams.Any())
+				{
+					int serialNumber = 1;
+					<!-- عداد المسابقات -->
+					foreach (var exam in Model.Exams.OrderByDescending(p=>p.Competition.Date))
+					{
+						<tr>
+							<td>@serialNumber</td> <!-- رقم المسابقة -->
+							<td>@exam.Competition.Date</td>
+							<td>@exam.PartsNumber</td> <!-- رقم المسابقة -->
+							<td>@exam.TotalScore</td>
+							<td>
+
+								<a asp-action="Edit" asp-controller="Exam" asp-route-id="@exam.Id" asp-route-contestantId="@Model.Id" class="btn btn-sm btn-warning">تعديل</a>
+
+								<a asp-action="GetDetails" asp-controller="Exam" asp-route-id="@exam.Id" asp-route-contestantId="@Model.Id" class="btn btn-sm btn-info">تفاصيل</a>
+
+								<a asp-action="Delete" asp-controller="Exam" asp-route-id="@exam.Id" asp-route-contestantId="@Model.Id" class="btn btn-sm btn-danger">حذف</a>
+							</td>
+
+						</tr>
+						serialNumber++;
+						<!-- تحديث عداد المسابقات -->
+					}
+				}
+				else
+				{
+				@* 	<tr>
+						<td  class="text-center">
+
+							<a asp-action="Add" asp-controller="Exam" class="btn  btn-primary w-25   mb-3" style="height:50px">اضافه</a>
+						</td>
+
+					</tr> *@
+					<tr>
+
+						<td  class="text-center">لا توجد مسابقات مسجلة</td>
+					</tr>
+				}
+
+			
+			</tbody>
+		</table>
+		<a class="btn btn-info" asp-action="GetAllContestant" asp-controller="Contestant">العوده الي القائمه السابقه </a>
+	</div>
+
+	<!-- Bootstrap Bundle with Popper -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+

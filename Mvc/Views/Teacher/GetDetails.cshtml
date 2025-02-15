@@ -1,0 +1,150 @@
+﻿@{
+	ViewData["Title"] = "GetAllContestant";
+	Layout = "_AdminLayout";
+	var competaions = new SelectList(Model.Select(p => p.Competition).Distinct(), "Id", "Date");
+
+}
+
+@using DataAccess_Layer.Models
+@using ServiceLayer.ContestantBL.Dtos
+@model IEnumerable<Exam>
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>المتسابقون</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+	<div class="container mt-4">
+		<h1 class="text-center mb-4" style="background-color:white;width:fit-content">المتسابقون</h1>
+
+		<!-- فلاتر البحث -->
+		<div class="row mb-3  " >
+			<div class ="col-md-3">
+				<label style="background-color:white;"> تاريخ المسابقه</label>
+
+				<!-- فلتر تاريخ المسابقة -->
+				<select id="dateFilter" asp-items="competaions" class="form-control">
+				</select>
+
+			</div>
+			<!-- فلتر نوع التعليم -->
+			<div class="col-md-3">
+				<label style ="background-color:white;">نوع التعليم:</label>
+				<select id="educationFilter" class="form-select">
+					<option value="">اختر نوع التعليم</option>
+					<option value="أزهري">أزهري</option>
+					<option value="تربية وتعليم">تربية وتعليم</option>
+				</select>
+			</div>
+
+			<!-- فلتر عدد الأجزاء -->
+			<div class="col-md-3">
+				<label style="background-color:white;">عدد الأجزاء:</label>
+				<select id="partsFilter" class="form-select">
+					<option value="">اختر عدد الأجزاء</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="7.5">ربع القران</option>
+					<option value="10">ثلث القران</option>
+					<option value="15">نصف القران</option>
+					<option value="20">ثلثي القران</option>
+					<option value="30">القران كاملا</option>
+				</select>
+			</div>
+
+			<!-- فلتر النتيجة -->
+			<div class="col-md-3">
+				<label style="background-color:white;">النتيجة:</label>
+				<select id="scoreFilter" class="form-select">
+					<option value="">اختر النتيجة</option>
+					<option value="90-100">من 90 إلى 100</option>
+					<option value="80-90">من 80 إلى 90</option>
+					<option value="70-80">من 70 إلى 80</option>
+					<option value="60-70">من 60 إلى 70</option>
+				</select>
+			</div>
+		</div>
+		<!-- زر ترتيب الأوائل -->
+		<div class="col-md-3">
+				<button id="sortButton" class="btn btn-secondary w-100 mb-5">ترتيب الأوائل</button>
+		</div>
+
+
+		<!-- جدول المتسابقين -->
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>ألاسم</th>
+					<th>السن</th>
+					<th>نوع التعليم</th>
+					<th>عدد الاجزاء</th>
+					<th>النتيجه</th>
+				</tr>
+			</thead>
+			<tbody id="contestantTable">
+				@foreach (var exam in Model)
+				{
+					<tr data-name="@exam.Contestant.FullName"
+						data-age="@(DateTime.Now.Year - exam.Contestant.BirthDate.Year)"
+						data-education="@exam.Contestant.Education"
+						data-parts="@exam.PartsNumber"
+						data-score="@exam.TotalScore"
+						data-date="@exam.Competition.Date">
+						<td>@exam.Contestant.FullName</td>
+						<td>@(DateTime.Now.Year - @exam.Contestant.BirthDate.Year)</td>
+						<td>@exam.Contestant.Education</td>
+						<td>@exam.PartsNumber</td>
+						<td>@exam.TotalScore</td>
+					</tr>
+				}
+			</tbody>
+
+			
+		</table>
+		<a class="btn btn-primary w-25 " asp-action="getAll"  style="height:50px;position:relative;left:15px">الرجوع  </a>
+	</div>
+
+	<script>
+		$(document).ready(function () {
+			function filterTable() {
+				let date = $('#dateFilter').val();
+				let education = $('#educationFilter').val();
+				let parts = $('#partsFilter').val();
+				let score = $('#scoreFilter').val();
+
+				$('#contestantTable tr').each(function () {
+					let dateMatch = !date || $(this).data('date') === date;
+					let educationMatch = !education || $(this).data('education') === education;
+					let partsMatch = !parts || $(this).data('parts') == parts;
+					let scoreMatch = !score || (score.split('-')[0] <= $(this).data('score') && $(this).data('score') <= score.split('-')[1]);
+
+					$(this).toggle(dateMatch && educationMatch && partsMatch && scoreMatch);
+				});
+			}
+
+			// تطبيق الفلاتر عند التغيير
+			$('#dateFilter, #educationFilter, #partsFilter, #scoreFilter').on('change', filterTable);
+
+			// ترتيب المتسابقين حسب النتيجة
+			$('#sortButton').on('click', function () {
+				let rows = $('#contestantTable tr').get();
+				rows.sort(function (a, b) {
+					return $(b).data('score') - $(a).data('score'); // ترتيب تنازلي حسب النتيجة
+				});
+				$.each(rows, function (index, row) {
+					$('#contestantTable').append(row);
+				});
+			});
+		});
+	</script>
+</body>
+</html>

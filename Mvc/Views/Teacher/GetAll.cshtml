@@ -1,0 +1,98 @@
+﻿@using ServiceLayer.TeacherLogic.Dtos
+@{
+    ViewData["Title"] = "GetAll";
+    Layout = "_AdminLayout";
+}
+@model List<TeacherDto>
+
+@{
+    ViewData["Title"] = "إدارة المحفظين";
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        h2 {
+            color: #343a40;
+        }
+
+        .table th {
+            cursor: pointer;
+        }
+
+        .btn-edit {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">إدارة المحفظين</h2>
+
+        <!-- زرار إضافة محفظ جديد -->
+        <a href="@Url.Action("Add", "Teacher")" class="btn btn-primary mb-3">إضافة محفظ جديد</a>
+
+        <!-- جدول المحفظين -->
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th onclick="sortTable()">اسم المحفظ ⬆⬇</th>
+                    <th>عدد المتسابقين</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="teacherTableBody">
+                @foreach (var teacher in Model)
+                {
+                    <tr>
+                        <td>@teacher.Name</td>
+                        <td>@teacher.NumberOfContestant</td>
+                        <td>
+                            <button class="btn btn-delete btn-sm" onclick="confirmDelete('@teacher.Id')">حذف</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function confirmDelete(teacherId) {
+            if (confirm("هل أنت متأكد أنك تريد حذف هذا المحفظ؟")) {
+                window.location.href = "/Teacher/Delete/" + teacherId;
+            }
+        }
+
+        function sortTable() {
+            let table = document.getElementById("teacherTableBody");
+            let rows = Array.from(table.rows);
+
+            rows.sort((a, b) => a.cells[0].innerText.localeCompare(b.cells[0].innerText, "ar"));
+
+            table.innerHTML = "";
+            rows.forEach(row => table.appendChild(row));
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
+

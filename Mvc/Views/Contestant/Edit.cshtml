@@ -1,0 +1,95 @@
+﻿@model ServiceLayer.ContestantBL.Dtos.CreateContestantDto
+
+@{
+	ViewData["Title"] = "Add";
+}
+
+@{
+	SelectList items = new SelectList(ViewBag.Teachers, "Id", "Name");
+
+}
+<div class="container mt-5">
+	<form asp-action="Edit" method="post">
+		<div class="form-group">
+			<label asp-for="ComputaionId" class="form-label">تاريخ المسابقه : @ViewBag.Computaion.Date.ToString("yyyy-MM-dd")</label>
+			<input asp-for="ComputaionId" value="@ViewBag.Computaion.Id" hidden="hidden" class="form-control" />
+			<input asp-for="CompetationDate" value="@ViewBag.Computaion.Date.ToString("yyyy-MM-dd")" hidden="hidden" class="form-control" />
+
+		</div>
+
+		<div class="form-group">
+			<label asp-for="Id	" class="form-label"></label>
+			<input asp-for="Id" class="form-control" />
+			<span asp-validation-for="Id" class="text-danger"></span>
+		</div>
+		
+		<div class="form-group">
+			<label asp-for="FullName" class="form-label"></label>
+			<input asp-for="FullName" class="form-control" />
+			<span asp-validation-for="FullName" class="text-danger"></span>
+		</div>
+
+		<div class="form-group">
+			<label asp-for="BirthDate" class="form-label"></label>
+			<input asp-for="BirthDate" type="date" class="form-control" />
+			<span asp-validation-for="BirthDate" class="text-danger"></span>
+		</div>
+
+		<div class="form-group">
+			<label asp-for="PhoneNumber" class="form-label"></label>
+			<input asp-for="PhoneNumber" class="form-control" />
+			<span asp-validation-for="PhoneNumber" class="text-danger"></span>
+		</div>
+
+
+		<div class="form-group">
+			<label asp-for="TeacherId" class="form-label"></label>
+			<select asp-for="TeacherId" asp-items="items" class="form-select">
+				<option value=""> </option>
+
+			</select>
+
+			<span asp-validation-for="TeacherId" class="text-danger"></span>
+		</div>
+		<div class="form-group">
+			<label asp-for="Education" class="form-label"></label>
+			<select asp-for="Education" class="form-select">
+				<option value="">   </option>
+
+				<option value="أزهري">أزهري</option>
+				<option value="تربيه وتعليم">تربيه وتعليم</option>
+
+			</select>
+
+			<span asp-validation-for="Education" class="text-danger"></span>
+		</div>
+
+		<div class="form-group">
+			<label asp-for="@Model.PartsNumber" class="form-label"></label>
+			<select asp-for="@Model.PartsNumber" class="form-select">
+				<option value=""> </option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="5">5</option>
+				<option value="7.5">ربع القران</option>
+				<option value="10">ثلث القران </option>
+				<option value="15">نصف القران</option>
+				<option value="20">ثلثي القران</option>
+				<option value="30">القران كاملا</option>
+			</select>
+			<span asp-validation-for="@Model.PartsNumber" class="text-danger"></span>
+		</div>
+		<div class="form-group" style="display:flex;justify-content:space-between;">
+			<a class="btn btn-secondary mt-3 " asp-action="GetDetails" asp-controller="contestant" asp-route-id="@ViewBag.ContestantId" style="position:relative; height:45px"> الرجوع الي الخلف </a>
+			<button type="submit" class="btn btn-primary mt-3" style="position:relative;left:15px;height:45px">   حفظ  البيانات</button>
+		</div>
+	</form>
+
+</div>
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}

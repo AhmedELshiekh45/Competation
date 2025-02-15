@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>لوحة التحكم</title>
+	<link rel="stylesheet" href="styles.css"> <!-- تضمين ملف CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<style>
+		.card {
+			text-align: center;
+			box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+			transition: transform 0.3s;
+		}
+
+			.card:hover {
+				transform: scale(1.05);
+			}
+
+		.container {
+			margin-top: 50px;
+		}
+	</style>
+</head>
+<body class="bg-light">
+	<div class="container">
+		<h1>    عن أَبي موسى الأَشْعريِّ  قال: قال رسولُ اللَّهِ ﷺ: مثَلُ المُؤمنِ الَّذِي يَقْرَأُ القرآنَ مثَلُ الأُتْرُجَّةِ: ريحُهَا طَيِّبٌ، وطَعْمُهَا طَيِّبٌ، ومثَلُ المُؤمنِ الَّذي لا يَقْرَأُ القُرْآنَ كَمَثَلِ التَّمْرةِ: لا رِيح لهَا، وطَعْمُهَا حُلْوٌ، ومثَلُ المُنَافِق الَّذِي يَقْرَأُ القُرْآنَ كَمَثَلِ الرّيحانَةِ: رِيحها طَيِّبٌ، وطَعْمُهَا مُرٌّ، ومَثَلُ المُنَافِقِ الَّذِي لا يَقْرَأُ القرآنَ كَمَثلِ الحَنْظَلَةِ: لَيْسَ لَها رِيحٌ، وَطَعْمُهَا مُرٌّ متفقٌ عَلَيْهِ</h1>
+	</div>
+	@if (User.Identity.IsAuthenticated)
+	{
+
+
+		<div class="container">
+			<div class="col-md-3">
+				<div class="card p-3">
+					<h4>المتسابق</h4>
+					<a asp-action="Add" asp-controller="Contestant" class="btn btn-success w-100 my-1">إضافة</a>
+				</div>
+			</div>
+			<!-- عمود الامتحان -->
+			<div class="col-md-3">
+			</div>
+		</div>
+
+		<script src="~/js/IndexScript.js"></script>
+	}
+	</body>
+	</html>

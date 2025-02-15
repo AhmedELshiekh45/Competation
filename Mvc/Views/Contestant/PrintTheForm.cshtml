@@ -1,0 +1,82 @@
+﻿@using ServiceLayer.ContestantBL.Dtos
+<!DOCTYPE html>
+@model PrintContestantDto
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استمارة التقديم</title>
+    <link rel="stylesheet" href="~/css/Print.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4 print-hide">استمارة التقديم</h2>
+
+        <!-- الجزء الذي سيتم طباعته فقط -->
+        <div id="print-area">
+            <div class="text-center mb-3">
+                <span class="serial-number">الرقم التسلسلي: @Model.SerialNumber</span>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-md-6"><strong>الرقم القومي:</strong> @Model.Id</div>
+                        <div class="col-md-6"><strong>الاسم:</strong> @Model.FullName</div>
+                        <div class="col-md-6"><strong>السن:</strong> @(DateTime.Now.Year - Model.BirthDate.Year)</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-6"><strong>التعليم:</strong> @Model.Education</div>
+                        <div class="col-md-6"><strong>عدد الأجزاء:</strong> @Model.PartsNumber</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-6"><strong>ميعاد الامتحان:</strong> @Model.CompetationDate.ToString("yyyy-MM-dd")</div>
+                        <div class="col-md-6"><strong>اسم المحفظ:</strong> @Model.TeacherId</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-center mb-3">الأسئلة</h3>
+            <form id="submissionForm">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>السؤال</th>
+                                <th>الدرجة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 1; i <= 10; i++)
+                            {
+                                <tr>
+                                    <td>السؤال @i</td>
+                                    <td><span class="print-space interactive"></span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-end total-score">
+                    <strong>المجموع الكلي:</strong>
+                    <span class="total-line">&nbsp;</span>
+                </div>
+            </form>
+        </div>
+
+        <div class="text-center print-hide">
+            <button class="btn btn-primary print-btn" onclick="printForm()" aria-label="طباعة الاستمارة">طباعة</button>
+            <a class="btn btn-secondary" asp-action="Add" aria-label="رجوع">رجوع</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+			function printForm() {
+			if (confirm('هل تريد طباعة الاستمارة؟')) {
+				window.print();
+			}
+		}
+	</script>
+</body>
+</html>
