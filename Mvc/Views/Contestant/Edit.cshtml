@@ -64,23 +64,6 @@
 			<span asp-validation-for="Education" class="text-danger"></span>
 		</div>
 
-		<div class="form-group">
-			<label asp-for="@Model.PartsNumber" class="form-label"></label>
-			<select asp-for="@Model.PartsNumber" class="form-select">
-				<option value=""> </option>
-				<option value="1">1</option>
-				<option value="2">2</option>
-				<option value="3">3</option>
-				<option value="4">4</option>
-				<option value="5">5</option>
-				<option value="7.5">ربع القران</option>
-				<option value="10">ثلث القران </option>
-				<option value="15">نصف القران</option>
-				<option value="20">ثلثي القران</option>
-				<option value="30">القران كاملا</option>
-			</select>
-			<span asp-validation-for="@Model.PartsNumber" class="text-danger"></span>
-		</div>
 		<div class="form-group" style="display:flex;justify-content:space-between;">
 			<a class="btn btn-secondary mt-3 " asp-action="GetDetails" asp-controller="contestant" asp-route-id="@ViewBag.ContestantId" style="position:relative; height:45px"> الرجوع الي الخلف </a>
 			<button type="submit" class="btn btn-primary mt-3" style="position:relative;left:15px;height:45px">   حفظ  البيانات</button>

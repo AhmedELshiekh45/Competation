@@ -1,50 +1,40 @@
 ﻿@{
-    ViewData["Title"] = "GetAllContestant";
-    Layout = "_AdminLayout";
-    var items = new SelectList(ViewBag.Teachers, "Id", "Name");
+	ViewData["Title"] = "GetAllContestant";
+	Layout = "_AdminLayout";
+	var items = new SelectList(ViewBag.Teachers, "Id", "Name");
 }
 
 @using ServiceLayer.ContestantBL.Dtos
 @model IEnumerable<GetallContestantsDto>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contestants</title>
+    <title>المتسابقون</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/GetAll.css" rel="stylesheet">
+    <link href="~/css/print-styles.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <style>
-        .search-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .search-box {
-            width: 400px;
-            height: 50px;
-            font-size: 18px;
-        }
-    </style>
+    <!-- إضافة مكتبة TableExport -->
+    <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/tableExport.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/libs/js-xlsx/xlsx.core.min.js"></script>
 </head>
 <body>
     <div class="container mt-4">
         <h1 class="text-center mb-4" style="background-color:white;width:fit-content">المتسابقون</h1>
-        <!-- صف يحتوي على زر إضافة متسابق جديد وخانة البحث -->
-        <div class="d-flex justify-content-between mb-4">
-            <!-- زر إضافة متسابق جديد -->
+
+        <!-- زر إضافة متسابق جديد وخانة البحث -->
+        <div class="d-flex justify-content-between mb-4 no-print">
             <a href="@Url.Action("Add", "Contestant")" class="btn btn-success btn-lg px-5 py-3" style="font-size: 15px; background-color: #28a745; border-color: #28a745;">
                 إضافة متسابق جديد
             </a>
-
-            <!-- خانة البحث -->
             <input type="text" id="searchInput" class="form-control search-box" placeholder="ابحث بالاسم..." style="width: 600px;">
         </div>
 
         <!-- Filters -->
-        <div class="row mb-3">
+        <div class="row mb-3 no-print">
             <label class="form-label mb-4 w-100 fw-bold fs-6">تاريخ المسابقه</label>
             <div class="col-md-2">
                 <label>تاريخ المسابقه :@ViewBag.CompetationDate</label>
@@ -83,23 +73,37 @@
                     <option value="80-90">من 80 إلى 90</option>
                     <option value="70-80">من 70 إلى 80</option>
                     <option value="60-70">من 60 إلى 70</option>
+                    <option value="50-60">من 50 إلى 60</option>
+                    <option value="40-50">من 40 إلى 50</option>
+                    <option value="30-40">من 30 إلى 40</option>
+                    <option value="20-30">من 20 إلى 30</option>
+                    <option value="10-20">من 10 إلى 20</option>
+                    <option value="0-10">من 0 إلى 10</option>
                 </select>
             </div>
-            <div class="col-md-2">
-                <button id="sortButton" class="btn btn-secondary w-100">ترتيب الأوائل</button>
+            <div class="col-md-2 student-count bg-light">
+                <h4>عدد الطلاب: <span id="studentCount">0</span></h4>
             </div>
         </div>
 
+        <!-- زر الطباعة وزر ترتيب الأوائل وزر التصدير إلى Excel -->
+        <div class="button-container p-4 m-4 d-flex w-50 justify-content-between no-print">
+            <button id="sortButton" class="btn btn-secondary w-25">ترتيب الأوائل</button>
+            <button id="printButton" class="btn btn-primary w-25 me-3">طباعه</button>
+            <button id="exportExcelButton" class="btn btn-info w-25">تصدير Excel</button>
+        </div>
+
         <!-- Table -->
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="printableTable">
             <thead>
                 <tr>
+                    <th>الترتيب</th>
                     <th>ألاسم</th>
                     <th>السن</th>
                     <th>نوع التعليم</th>
                     <th>عدد الاجزاء</th>
                     <th>النتيجه</th>
-                    <th>Actions</th>
+                    <th class="no-print">Actions</th>
                 </tr>
             </thead>
             <tbody id="contestantTable">
@@ -110,6 +114,20 @@
 
     <script>
         $(document).ready(function () {
+            // تحديث عدد الطلاب
+            function updateStudentCount() {
+                let visibleRows = $('#contestantTable tr:visible').length;
+                $('#studentCount').text(visibleRows);
+            }
+
+            // تحديث عمود الترتيب
+            function updateIndexing() {
+                $('#contestantTable tr:visible').each(function (index) {
+                    $(this).find('td:first').text(index + 1);
+                });
+            }
+
+            // تطبيق الفلاتر
             function filterTable() {
                 let search = $('#searchInput').val().toLowerCase();
                 let date = $('#dateFilter').val();
@@ -121,15 +139,19 @@
                 $('#contestantTable tr').each(function () {
                     let nameMatch = $(this).data('name').toLowerCase().includes(search);
                     let dateMatch = !date || $(this).data('date') === date;
-                    let teacherMatch = !teacher || $(this).data('teacher') == teacher; // التحقق من teacherId
+                    let teacherMatch = !teacher || $(this).data('teacher') == teacher;
                     let educationMatch = !education || $(this).data('education') === education;
                     let partsMatch = !parts || $(this).data('parts') == parts;
                     let scoreMatch = !score || (score.split('-')[0] <= $(this).data('score') && $(this).data('score') <= score.split('-')[1]);
 
                     $(this).toggle(nameMatch && dateMatch && teacherMatch && educationMatch && partsMatch && scoreMatch);
                 });
+
+                updateStudentCount();
+                updateIndexing();
             }
 
+            // ترتيب الصفوف بناءً على النتيجة (من الأعلى إلى الأدنى)
             function sortTable() {
                 let rows = $('#contestantTable tr').get();
                 rows.sort(function (a, b) {
@@ -148,14 +170,62 @@
                 $.each(rows, function (index, row) {
                     $('#contestantTable').append(row);
                 });
+
+                updateStudentCount();
+                updateIndexing();
             }
 
+            // تطبيق الفلاتر عند تغيير القيم
             $('#searchInput, #dateFilter, #teacherFilter, #educationFilter, #partsFilter, #scoreFilter').on('input change', filterTable);
 
+            // ترتيب الأوائل
             $('#sortButton').on('click', function () {
-                filterTable(); // Apply filters first
-                sortTable();   // Then sort the filtered results
+                filterTable();
+                sortTable();
             });
-        });    </script>
+
+            // طباعة الجدول
+            $('#printButton').on('click', function () {
+                filterTable();
+                sortTable();
+                window.print();
+            });
+
+            // تصدير الجدول إلى Excel
+            $('#exportExcelButton').on('click', function () {
+                filterTable(); // تطبيق الفلاتر أولاً
+                sortTable(); // ترتيب الصفوف
+
+                // إنشاء نسخة من الجدول مع تطبيق الفلاتر
+                let clonedTable = $('#printableTable').clone();
+                clonedTable.find('.no-print').remove(); // إزالة الأعمدة غير المرغوب فيها
+
+                // إزالة الصفوف المخفية
+                clonedTable.find('tr').each(function () {
+                    if ($(this).css('display') === 'none') {
+                        $(this).remove();
+                    }
+                });
+
+                // إضافة الجدول المؤقت إلى DOM
+                $('body').append(clonedTable);
+
+                // تصدير الجدول المؤقت إلى Excel
+                clonedTable.tableExport({
+                    formats: ['xlsx'],
+                    filename: 'contestants',
+                    bootstrap: true,
+                    exportButtons: false,
+                });
+
+                // حذف الجدول المؤقت بعد التصدير
+                clonedTable.remove();
+            });
+
+            // تحديث عدد الطلاب والترتيب عند تحميل الصفحة
+            updateStudentCount();
+            updateIndexing();
+        });
+    </script>
 </body>
 </html>

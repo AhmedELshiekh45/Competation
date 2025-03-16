@@ -1,19 +1,30 @@
 ﻿@using ServiceLayer.ContestantBL.Dtos
 @model IEnumerable<GetallContestantsDto>
 
+@{
+	int i = 1; // تعريف متغير العداد هنا
+}
+
 @foreach (var contestant in Model)
 {
 	<tr data-name="@contestant.FullName" data-date="@contestant.ExamDate" data-teacher="@contestant.TeacherId" data-education="@contestant.Education" data-parts="@contestant.NumberOfParts" data-score="@contestant.Score">
+		<td>@i</td> <!-- عمود الترتيب -->
 		<td>@contestant.FullName</td>
-		<td>@(DateTime.Now.Year-contestant.BirthDate.Year)</td>
+		<td>@(DateTime.Now.Year - contestant.BirthDate.Year)</td>
 		<td>@contestant.Education</td>
 		<td>@contestant.NumberOfParts</td>
 		<td>@contestant.Score</td>
-		<td>
-			<a class="btn btn-primary btn-sm" asp-action="GetDetails" asp-controller="Contestant" asp-route-id="@contestant.Id">التفاصيل </a>
-			<a class="btn btn-danger btn-sm" asp-action="Delete" asp-controller="Contestant" asp-route-id="@contestant.Id">حذف</a>
+		<td class="no-print">
+			<a class="btn btn-primary .delete-btn btn-sm" asp-action="GetDetails" asp-controller="Contestant" asp-route-id="@contestant.Id">التفاصيل</a>
+			<a class="btn btn-danger btn-sm"
+			   asp-action="Delete"
+			   asp-controller="Contestant"
+			   asp-route-id="@contestant.Id"
+			   onclick="return confirm('هل تريد حذف الطالب؟');">
+				حذف
+			</a>
 		</td>
 	</tr>
-
-
+	i++; // زيادة العداد بعد كل صف
 }
+

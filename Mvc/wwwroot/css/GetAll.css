@@ -1,0 +1,84 @@
+﻿/* ملف print-styles.css */
+
+/* إخفاء العناصر غير المرغوب فيها أثناء الطباعة */
+@media print {
+    /* إخفاء الـ Layout */
+    nav, .no-print {
+        display: none !important;
+    }
+
+    /* إخفاء عمود Actions */
+    table th.no-print,
+    table td.no-print {
+        display: none;
+    }
+
+    /* تحسين شكل الجدول أثناء الطباعة */
+    table, #printableTable {
+        width: 100% !important; /* جعل الجدول يأخذ الصفحة بالكامل */
+        border-collapse: collapse;
+        font-size: 12px; /* حجم الخط */
+        margin: 20px auto !important; /* إضافة هامش وتوسيط الجدول */
+        padding: 10px !important; /* إضافة حشو */
+        page-break-inside: auto; /* منع تقطيع الجدول بين الصفحات */
+    }
+
+        table th,
+        table td {
+            border: 2px solid #000;
+            padding: 8px; /* زيادة الحشو */
+            text-align: center;
+            background-color: #f9f9f9; /* لون خلفية الخلايا */
+        }
+
+        table th {
+            background-color: #007bff; /* لون خلفية عناوين الأعمدة */
+            color: white; /* لون نص عناوين الأعمدة */
+            font-weight: bold; /* جعل النص غامق */
+        }
+
+    /* تكرار عناوين الأعمدة في كل صفحة */
+    thead {
+        display: table-header-group;
+    }
+
+    /* إخفاء العناصر الأخرى */
+    .button-container,
+    .search-box,
+    .student-count,
+    .filters,
+    h1 {
+        display: none;
+    }
+
+    /* تحسين محتوى الصفحة */
+    main {
+        margin-right: 0 !important; /* إزالة الهامش الأيمن */
+        padding: 0 !important; /* إزالة الحشو */
+    }
+
+    /* جعل الجدول يأخذ الصفحة بالكامل */
+    .container {
+        width: 100% !important;
+        margin: 0 auto !important; /* توسيط المحتوى */
+        padding: 0 !important;
+    }
+
+    /* إضافة هامش للصفحة */
+    @page {
+        margin: 20mm; /* إضافة هامش للصفحة */
+    }
+
+    /* إخفاء الصورة الخلفية */
+    body {
+        background-image: none !important;
+        margin: 0 !important; /* إزالة هوامش الجسم */
+        padding: 0 !important; /* إزالة الحشو */
+    }
+
+    /* منع تقطيع الصفوف بين الصفحات */
+    tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+}
